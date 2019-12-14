@@ -3,14 +3,27 @@
 #include <sys/inotify.h>
 #include <sys/stat.h>           // for the inode 
 #include <stdlib.h> 
+#include <errno.h>
+
+struct watch{
+
+	int fd; //file descriptor
+	int wd; //watch description
+};
 
 int main(int argc, char *argv[])
 {
 	FILE *fp;
 
-	//char buff[50];
-	int fd;		//file description 
-	int wd;		//watch description 
+	//char buff[50]; 
+	
+	/*
+        if(argc == 1){
+		printf("Cannot open file: ");
+		if()
+	}
+	*/
+
 	if(argc < 2)
 	{
 		perror("No directory to watch over");
@@ -21,15 +34,16 @@ int main(int argc, char *argv[])
 	//char c;
 	//while((c = getc(fp)) != EOF)
 	//	printf("%c", c);
-	
-	fd = inotify_init();	//create inotify for file descriptor
-	if( fd == -1 )
+	struct watch o_w;
+	o_w.fd = inotify_init();	//create inotify for file descriptor
+	if( o_w.fd == -1 )
 	{
 		perror("Failed to initialise, bye");
 	}
 
-	wd = inotify_add_watch(fd, argv[1], IN_MODIFY | IN_CREATE | IN_DELETE);
-	if(wd < 0)
+	o_w.wd = inotify_add_watch(o_w.fd, argv[1], IN_ALL_EVENTS);
+
+	if(o_w.wd < 0)
 	{
 		perror("Failed to initialise to watch file descriptor");
 		exit(1);
@@ -38,4 +52,5 @@ int main(int argc, char *argv[])
 
 	return 0;
 }
+
 
