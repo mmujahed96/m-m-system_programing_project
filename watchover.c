@@ -15,15 +15,6 @@ int main(int argc, char *argv[])
 {
 	FILE *fp;
 
-	//char buff[50]; 
-	
-	/*
-        if(argc == 1){
-		printf("Cannot open file: ");
-		if()
-	}
-	*/
-
 	if(argc < 2)
 	{
 		perror("No directory to watch over");
@@ -31,11 +22,10 @@ int main(int argc, char *argv[])
 	}
 	
 	fp = fopen(argv[1], "r");
-	//char c;
-	//while((c = getc(fp)) != EOF)
-	//	printf("%c", c);
+
 	struct watch o_w;
 	o_w.fd = inotify_init();	//create inotify for file descriptor
+	
 	if( o_w.fd == -1 )
 	{
 		perror("Failed to initialise, bye");
