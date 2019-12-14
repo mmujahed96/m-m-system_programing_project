@@ -13,6 +13,7 @@ struct watch{
 
 int main(int argc, char *argv[])
 {
+	struct watch o_w;
 	FILE *fp;
 
 	if(argc < 2)
@@ -23,7 +24,6 @@ int main(int argc, char *argv[])
 	
 	fp = fopen(argv[1], "r");
 
-	struct watch o_w;
 	o_w.fd = inotify_init();	//create inotify for file descriptor
 	
 	if( o_w.fd == -1 )
