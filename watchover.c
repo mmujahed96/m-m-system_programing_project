@@ -43,11 +43,11 @@ pthread_cond_t condition = PTHREAD_COND_INITIALIZER;
 
 static struct watch *root;
 static bool verbose = true;
-void *watcher(struct watch o_w);
+void *watch(struct watch o_w);
 static bool run = true;
 
-void *watchers();
-void ctrl_c_handler(int, struct watch o_w);
+//void *watchers();
+void ctrl_c_handler(int /*, struct watch o_w*/);
 
 int main(int argc, char *argv[])
 {
@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
 	o_w.fd = inotify_init();	//create inotify for file descriptor
 
 
-	if( pthread_create(&id, NULL, watchers, NULL)){
+	if( pthread_create(&id, NULL, watch, NULL)){
 		fprintf(stderr, "Failed Creating watcher thread!");
 	}
 
@@ -88,7 +88,9 @@ int main(int argc, char *argv[])
 		perror("Failed to initialise to watch file descriptor");
 		exit(1);
 	}
+
 	signal(SIGINT, ctrl_c_handler); //handle INT
+	
 	while(run){
 	pthread_cond_wait(&condition, &mut);
 	}
@@ -100,6 +102,7 @@ int main(int argc, char *argv[])
 
 void *watch(struct watch o_w)
 {
+	//struct watch o_w;
 	char buffer[BUFF];
 	int size;
 	int i = 0;
@@ -212,10 +215,10 @@ void *watch(struct watch o_w)
 		}
 
 	}
-
+	pthread_cond_signal(&condition);
 }
 
-void *watchers()
+/*void *watchers()
 {
 	while(1)
 	{
@@ -223,9 +226,10 @@ void *watchers()
 	}
 	pthread_cond_signal(&condition);
 }
-
-void ctrl_c_handler(int signum, struct watch w_o)
+*/
+void ctrl_c_handler(int signum /*, struct watch w_o */)
 {
+	struct watch w_o;
 	printf(" Kill signal, exiting now");
 	run = false;
 	//removing from watch list
